@@ -4,6 +4,7 @@
     { "source": "/models/(.*)", "destination": "/api/index.js" },
     { "source": "/editor", "destination": "/editor/index.html" },
     { "source": "/editor/", "destination": "/editor/index.html" },
+    { "source": "/login", "destination": "/editor/index.html" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }

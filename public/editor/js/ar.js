@@ -47,8 +47,13 @@ function onResults(results) {
   ctx.restore();
 }
 
-document.getElementById('mode-face')?.addEventListener('click', () => {
-  // Modo cara logic
+document.addEventListener('DOMContentLoaded', () => {
+  const path = window.location.pathname;
+  if (path === '/login') {
+    document.getElementById('login-container').style.display = 'block';
+  } else if (path === '/editor') {
+    document.getElementById('editor-container').style.display = 'block';
+  }
 });
 
 start();
