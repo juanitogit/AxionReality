@@ -2,19 +2,41 @@
   "version": 2,
   "builds": [
     {
+      "src": "Design-Assets/artifacts/aaru/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
       "src": "AR-AI-Editor/server.js",
       "use": "@vercel/node"
     },
     {
-      "src": "**",
+      "src": "AR-AI-Editor/**/*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "AR-AI-Editor/**/*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "AR-AI-Editor/**/*.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "AR-AI-Editor/**/*.png",
       "use": "@vercel/static"
     }
   ],
-  "rewrites": [
+  "redirects": [
     {
-      "source": "/",
-      "destination": "/aaru.html"
-    },
+      "source": "/editor",
+      "destination": "/editor/",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "/AR-AI-Editor/server.js"
@@ -22,6 +44,26 @@
     {
       "source": "/models/(.*)",
       "destination": "/AR-AI-Editor/server.js"
+    },
+    {
+      "source": "/editor/(.*)",
+      "destination": "/AR-AI-Editor/$1"
+    },
+    {
+      "source": "/editor/",
+      "destination": "/AR-AI-Editor/index.html"
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": "/Design-Assets/artifacts/aaru/assets/$1"
+    },
+    {
+      "source": "/(.+\\.(svg|png|jpg|jpeg|txt|ico|json|woff|woff2))",
+      "destination": "/Design-Assets/artifacts/aaru/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/Design-Assets/artifacts/aaru/index.html"
     }
   ]
 }
