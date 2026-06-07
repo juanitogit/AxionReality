@@ -2,7 +2,8 @@
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.js" },
     { "source": "/models/(.*)", "destination": "/api/index.js" },
-    { "source": "/editor", "destination": "/AR-AI-Editor/index.html" },
+    { "source": "/editor", "destination": "/AR-AI-Editor/editor.html" },
+    { "source": "/editor/", "destination": "/AR-AI-Editor/editor.html" },
     { "source": "/editor/(.*)", "destination": "/AR-AI-Editor/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
