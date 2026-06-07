@@ -1,0 +1,7 @@
+{
+  "name": "axion-reality-root",
+  "private": true,
+  "scripts": {
+    "vercel-build": "npm i -g pnpm && cd Design-Assets && pnpm install && pnpm run build"
+  }
+}

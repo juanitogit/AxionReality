@@ -2,10 +2,10 @@
   "version": 2,
   "builds": [
     {
-      "src": "Design-Assets/artifacts/aaru/package.json",
+      "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist"
+        "distDir": "Design-Assets/artifacts/aaru/dist"
       }
     },
     {
@@ -55,15 +55,15 @@
     },
     {
       "source": "/assets/(.*)",
-      "destination": "/Design-Assets/artifacts/aaru/assets/$1"
+      "destination": "/assets/$1"
     },
     {
       "source": "/(.+\\.(svg|png|jpg|jpeg|txt|ico|json|woff|woff2))",
-      "destination": "/Design-Assets/artifacts/aaru/$1"
+      "destination": "/$1"
     },
     {
       "source": "/(.*)",
-      "destination": "/Design-Assets/artifacts/aaru/index.html"
+      "destination": "/index.html"
     }
   ]
 }
