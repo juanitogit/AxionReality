@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Accesorios AR</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #000; color: #fff; font-family: sans-serif; }
+    video, canvas { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; transform: scaleX(-1); }
+    canvas { z-index: 10; pointer-events: none; }
+    .ui { position: absolute; top: 20px; left: 20px; z-index: 20; display: flex; gap: 10px; }
+    button { background: #ebfb10; color: #000; border: none; padding: 10px 15px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="ui">
+    <button onclick="location.href='ar-viewer.html'">← Volver</button>
+    <button id="mode-face">Cara</button>
+    <button id="mode-body">Cuerpo</button>
+  </div>
+  <video id="video" autoplay playsinline></video>
+  <canvas id="canvas"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.158.0/build/three.module.js"
+      }
+    }
+  </script>
+  <script type="module" src="js/ar.js"></script>
+</body>
+</html>

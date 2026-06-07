@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Visor AR</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; display: block; background: #000; }
+    model-viewer { width: 100vw; height: 100vh; background-color: #333; }
+    .ar-ui { position: absolute; bottom: 20px; left: 0; right: 0; display: flex; justify-content: center; gap: 10px; z-index: 10; }
+    .ar-btn { background: var(--accent); color: #000; border: none; padding: 12px 20px; font-weight: bold; border-radius: 8px; }
+  </style>
+  <!-- Socket.io para Live Sync -->
+  <script src="https://cdn.socket.io/4.8.3/socket.io.min.js"></script>
+</head>
+<body>
+  <model-viewer id="viewer" src="models/current.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate shadow-intensity="1" environment-image="neutral">
+    <div class="ar-ui">
+      <button class="ar-btn" slot="ar-button">Ver en mi espacio</button>
+      <button class="ar-btn" id="btn-accessories" onclick="location.href='ar-accessories.html'">Modo Accesorios</button>
+    </div>
+  </model-viewer>
+  
+  <script>
+    const viewer = document.getElementById('viewer');
+    viewer.addEventListener('error', (e) => {
+      alert('Error de model-viewer: No se pudo renderizar la escena 3D.');
+      console.error(e);
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const model = urlParams.get('model');
+    
+    if (model) {
+      viewer.src = 'models/' + model;
+    } else {
+      alert("No se proporcionó ningún ID de modelo (falta ?model=).");
+      viewer.src = 'models/current.glb';
+    }
+
+    // Configurar Live Sync
+    if (typeof io !== 'undefined') {
+      const socket = io();
+      socket.on('model_updated', (updatedModelId) => {
+        if (updatedModelId === model || !model) {
+          console.log('Live Sync: Recargando modelo ' + updatedModelId);
+          // Agregamos un timestamp a la URL para forzar al model-viewer a ignorar la caché
+          viewer.src = 'models/' + updatedModelId + '?t=' + Date.now();
+        }
+      });
+    }
+  </script>
+</body>
+</html>

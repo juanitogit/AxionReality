@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>AR+IA Editor Avanzado</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/",
+        "cannon-es": "https://unpkg.com/cannon-es@0.20.0/dist/cannon-es.js"
+      }
+    }
+  </script>
+  <!-- Socket.io para Live Sync -->
+  <script src="https://cdn.socket.io/4.8.3/socket.io.min.js"></script>
+  <!-- model-viewer para previews -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+</head>
+<body>
+  
+  <div class="toolbar">
+    <button class="btn" onclick="window.location.href='/'" style="margin-right:15px; display:flex; align-items:center; gap:5px;" title="Volver al Portal">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Volver
+    </button>
+    <div style="display:flex; align-items:center; gap:8px; margin-right:20px;">
+      <img src="/logo-cube.png" alt="AXION" width="28" height="28">
+      <span style="color:var(--accent); font-weight:900; font-size:18px; text-transform:uppercase;">AXION Studio</span>
+    </div>
+    <button class="btn btn-primary" id="btn-save-cloud" style="background:var(--color-system-blue); border-color:var(--color-system-blue); display:none;">Guardar</button>
+    <button class="btn btn-primary" id="btn-export">Exportar GLB</button>
+    <button class="btn" id="btn-qr">AR / QR</button>
+    <label class="btn" style="cursor:pointer;">
+      Subir Modelo
+      <input type="file" id="btn-upload" accept=".glb,.gltf" style="display:none;">
+    </label>
+    <button class="btn" style="padding:8px;" id="btn-undo" title="Deshacer (Ctrl+Z)" onclick="window.sceneAPI.undo()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path></svg>
+    </button>
+    <button class="btn" style="padding:8px;" id="btn-redo" title="Rehacer (Ctrl+Y)" onclick="window.sceneAPI.redo()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"></path><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"></path></svg>
+    </button>
+    <div style="width:1px; height:24px; background:var(--border); margin:0 4px;"></div>
+    <button class="btn" style="padding:8px;" id="btn-copy" title="Copiar (Ctrl+C)" onclick="window.sceneAPI.copyObject()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+    </button>
+    <button class="btn" style="padding:8px;" id="btn-cut" title="Cortar (Ctrl+X)" onclick="window.sceneAPI.cutObject()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+    </button>
+    <button class="btn" style="padding:8px;" id="btn-paste" title="Pegar (Ctrl+V)" onclick="window.sceneAPI.pasteObject()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+    </button>
+    <button class="btn" style="padding:8px;" id="btn-duplicate" title="Duplicar (Ctrl+D)" onclick="window.sceneAPI.duplicateObject()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><rect x="2" y="2" width="14" height="14" rx="2" ry="2"></rect></svg>
+    </button>
+    <button class="btn" style="padding:8px; color:#ff4d4d;" id="btn-delete" title="Eliminar (Supr)" onclick="window.sceneAPI.deleteObject()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+    </button>
+    <div style="flex:1;"></div>
+    <button class="btn" id="btn-theme" style="display:flex; align-items:center; gap:6px;">
+      <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      <svg id="icon-sun" style="display:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      Tema
+    </button>
+    <button class="btn" id="btn-toggle-cam" style="display:flex; align-items:center; gap:6px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v4"></path><path d="M14 10V5a2 2 0 0 0-4 0v5"></path><path d="M10 10.5V4a2 2 0 0 0-4 0v9"></path><path d="M6 14v-1a2 2 0 0 0-4 0v3c0 4.418 3.582 8 8 8h3c3.866 0 7-3.134 7-7v-3a2 2 0 0 0-4 0v1"></path></svg>
+      Gestos
+    </button>
+    <!-- Mic removed from here -->
+    <!-- User Profile Badge -->
+    <div id="user-profile" style="display:none; align-items:center; gap:8px; margin-left:10px; background:var(--bg); padding:4px 12px; border-radius:var(--radius-buttons); border:1px solid var(--border);">
+      <div style="width:24px; height:24px; border-radius:50%; background:var(--accent); color:var(--btn-text); display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:12px;" id="user-avatar">?</div>
+      <div style="font-size:12px; font-weight:600; color:var(--fg);" id="user-name">Usuario</div>
+    </div>
+  </div>
+
+  <div class="sidebar-left">
+    <div class="tabs">
+      <div class="tab active" data-target="tab-build">Añadir</div>
+      <div class="tab" data-target="tab-ai">IA</div>
+    </div>
+    <div id="tab-build" class="tab-content active">
+      <div class="panel-section">
+        <div class="panel-title">Geometría Básica</div>
+        <div class="panel-subtitle">Añade primitivas a la escena</div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn" id="btn-add-cube">Cubo</button>
+          <button class="btn" id="btn-add-sphere">Esfera</button>
+          <button class="btn" id="btn-add-cylinder">Cilindro</button>
+          <button class="btn" id="btn-add-cone">Cono</button>
+          <button class="btn" id="btn-add-torus">Toroide</button>
+          <button class="btn" id="btn-add-plane">Plano</button>
+          <button class="btn" id="btn-add-circle">Círculo</button>
+          <button class="btn" id="btn-add-ring">Anillo</button>
+          <button class="btn" id="btn-add-capsule">Cápsula</button>
+          <button class="btn" id="btn-add-icosahedron">Icosaedro</button>
+          <button class="btn" id="btn-add-dodecahedron">Dodecaedro</button>
+        </div>
+      </div>
+      
+      <div class="panel-section">
+        <div class="panel-title">Herramientas</div>
+        <div class="panel-subtitle">Gizmo de transformación</div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn active" id="btn-tool-translate">Mover</button>
+          <button class="btn" id="btn-tool-rotate">Rotar</button>
+          <button class="btn" id="btn-tool-scale">Escalar</button>
+        </div>
+        <div style="margin-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label class="switch">
+              <input type="checkbox" id="btn-tool-snap">
+              <span class="slider"></span>
+            </label>
+            <span style="font-size:13px; font-weight:600; color:var(--text-muted);">Imán (Snap)</span>
+          </div>
+          <button class="btn" id="btn-drop-floor" style="font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 4px;" title="Pegar a la base (Y=0)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7M2 22h20"/></svg>
+            Al Suelo
+          </button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-title">Transformación Manual</div>
+        <div class="panel-subtitle">Valores exactos</div>
+        <div class="prop-row"><div class="prop-label"><span>Posición X</span> <span class="prop-val" id="val-pos-x">0</span></div><input type="number" id="pos-x" step="0.1"></div>
+        <div class="prop-row"><div class="prop-label"><span>Posición Y</span> <span class="prop-val" id="val-pos-y">0</span></div><input type="number" id="pos-y" step="0.1"></div>
+        <div class="prop-row"><div class="prop-label"><span>Posición Z</span> <span class="prop-val" id="val-pos-z">0</span></div><input type="number" id="pos-z" step="0.1"></div>
+        
+        <div class="prop-row"><div class="prop-label"><span>Rotación X</span> <span class="prop-val" id="val-rot-x">0</span></div><input type="number" id="rot-x" step="1"></div>
+        <div class="prop-row"><div class="prop-label"><span>Rotación Y</span> <span class="prop-val" id="val-rot-y">0</span></div><input type="number" id="rot-y" step="1"></div>
+        <div class="prop-row"><div class="prop-label"><span>Rotación Z</span> <span class="prop-val" id="val-rot-z">0</span></div><input type="number" id="rot-z" step="1"></div>
+        
+        <div class="prop-row"><div class="prop-label"><span>Escala X</span> <span class="prop-val" id="val-sc-x">1</span></div><input type="number" id="sc-x" step="0.1"></div>
+        <div class="prop-row"><div class="prop-label"><span>Escala Y</span> <span class="prop-val" id="val-sc-y">1</span></div><input type="number" id="sc-y" step="0.1"></div>
+        <div class="prop-row"><div class="prop-label"><span>Escala Z</span> <span class="prop-val" id="val-sc-z">1</span></div><input type="number" id="sc-z" step="0.1"></div>
+      </div>
+    </div>
+    <div id="tab-ai" class="tab-content">
+      <div class="panel-section">
+        <div class="panel-title">Buscar / Generar con IA</div>
+        <div class="panel-subtitle">Describe el objeto o presiona el micrófono.</div>
+        
+        <style>
+          @keyframes ai-wave {
+            0%, 100% { height: 10px; }
+            50% { height: 30px; }
+          }
+        </style>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+          <button class="btn" id="btn-toggle-mic" style="display:flex; align-items:center; gap:6px; flex:1; justify-content:center; background:var(--bg); border:1px solid var(--accent); color:var(--accent);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+            Dictar por Voz
+          </button>
+        </div>
+        <div id="voice-status" style="color:var(--accent); font-size:12px; text-align:center; margin-bottom:8px; min-height: 14px;"></div>
+
+        <div id="ai-input-container">
+          <textarea id="ai-prompt" rows="4" placeholder="Ej: soccer ball, sports car, tree, house..." style="width:100%; background:var(--input-bg); color:var(--fg); border:1px solid var(--border); border-radius:var(--radius-buttons); padding:12px; font-family:var(--font-main); outline:none; font-size:14px; resize:vertical;"></textarea>
+          <button class="btn btn-primary" id="btn-generate-ai" style="width:100%; margin-top:12px;">Buscar Modelo / Generar</button>
+        </div>
+
+        <div id="ai-wave-animation" style="display:none; flex-direction:column; align-items:center; justify-content:center; padding: 20px 0; background:var(--input-bg); border-radius:var(--radius-buttons); border:1px solid var(--accent);">
+           <div style="display:flex; gap:6px; align-items:center; height:40px;">
+             <div style="width:6px; height:10px; background:var(--accent); border-radius:3px; animation: ai-wave 1s ease-in-out infinite;"></div>
+             <div style="width:6px; height:20px; background:var(--accent); border-radius:3px; animation: ai-wave 1s ease-in-out infinite 0.2s;"></div>
+             <div style="width:6px; height:35px; background:var(--accent); border-radius:3px; animation: ai-wave 1s ease-in-out infinite 0.4s;"></div>
+             <div style="width:6px; height:15px; background:var(--accent); border-radius:3px; animation: ai-wave 1s ease-in-out infinite 0.6s;"></div>
+             <div style="width:6px; height:25px; background:var(--accent); border-radius:3px; animation: ai-wave 1s ease-in-out infinite 0.8s;"></div>
+           </div>
+           <div style="color:var(--accent); font-size:13px; margin-top:15px; font-weight:700;" id="wave-text">Escuchando...</div>
+        </div>
+
+        <div id="ai-loading" style="display:none; color:var(--accent); margin-top:10px; font-weight:600;">
+          <span style="display:inline-block; animation: spin 1s linear infinite; margin-right:8px;">⟳</span>
+          Buscando modelos...
+        </div>
+        <div id="ai-results" style="margin-top:12px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div id="status-badge">Gesto detectado</div>
+    <div id="transform-hud" style="position:absolute; bottom:40px; left:50%; transform:translateX(-50%); background:rgba(22, 33, 54, 0.9); border:1px solid var(--accent); color:var(--accent); padding:10px 24px; border-radius:30px; font-weight:700; font-family:var(--font-mono); font-size:15px; pointer-events:none; opacity:0; transition:opacity 0.2s; z-index:30; box-shadow:var(--shadow-xl); text-align:center;">
+      Rot: 90°
+    </div>
+    <div id="canvas-container" style="width:100%; height:100%;"></div>
+
+    <div class="video-container" id="video-wrapper">
+      <video id="webcam" autoplay playsinline></video>
+      <canvas id="gesture-canvas" class="canvas-overlay"></canvas>
+    </div>
+  </div>
+
+  <div class="sidebar-right">
+    <div class="tabs">
+      <div class="tab active" data-target="tab-mat">Material</div>
+      <div class="tab" data-target="tab-phys">Física</div>
+      <div class="tab" data-target="tab-mods">Mods</div>
+    </div>
+    
+    <div id="tab-mat" class="tab-content active" style="padding-top: 10px;">
+      <div style="margin-bottom: 20px; background: var(--input-bg); padding: 15px; border-radius: var(--radius-buttons); border: 1px solid var(--border);">
+        <div style="color:var(--accent); font-weight:700; font-size:16px;" id="obj-name">Esfera 2</div>
+        <div style="color:var(--text-muted); font-size:12px; font-family:var(--font-mono); margin-top:2px;" id="obj-type">sphere</div>
+      </div>
+
+      <div class="prop-row">
+        <div class="prop-label">Color Base</div>
+        <div style="display:flex; width:100%; gap:10px;">
+          <input type="color" id="mat-color" value="#e8e8f0" style="width: 40px; padding:0;">
+          <input type="text" id="mat-color-hex" value="#e8e8f0" style="flex:1;">
+        </div>
+      </div>
+      
+      <div class="prop-row">
+        <div class="prop-label"><span>Rugosidad</span> <span class="prop-val" id="val-roughness">0.50</span></div>
+        <input type="range" id="mat-roughness" min="0" max="1" step="0.01" value="0.5">
+      </div>
+      
+      <div class="prop-row">
+        <div class="prop-label"><span>Metalizado</span> <span class="prop-val" id="val-metalness">0.10</span></div>
+        <input type="range" id="mat-metalness" min="0" max="1" step="0.01" value="0.1">
+      </div>
+      
+      <div class="prop-row">
+        <div class="prop-label">Emisivo</div>
+        <div style="display:flex; width:100%; gap:10px;">
+          <input type="color" id="mat-emissive" value="#000000" style="width: 40px; padding:0;">
+          <input type="text" id="mat-emissive-hex" value="#000000" style="flex:1;">
+        </div>
+      </div>
+      
+      <div class="prop-row">
+        <div class="prop-label"><span>Opacidad</span> <span class="prop-val" id="val-opacity">1.00</span></div>
+        <input type="range" id="mat-opacity" min="0" max="1" step="0.01" value="1.0">
+      </div>
+      
+      <div class="prop-row" style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border);">
+        <div class="prop-label" style="width:auto; margin:0;">Wireframe</div>
+        <label class="switch">
+          <input type="checkbox" id="mat-wireframe">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div id="tab-phys" class="tab-content">
+      <div class="panel-section">
+        <div class="panel-title">Física (Cannon.js)</div>
+        <div class="panel-subtitle">Comportamiento físico del objeto</div>
+        
+        <div class="prop-row">
+          <div class="prop-label" style="width:auto; margin:0;">Habilitar Física</div>
+          <label class="switch">
+            <input type="checkbox" id="phys-enable">
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="prop-row" style="margin-top:10px;">
+          <div class="prop-label">Tipo de Cuerpo</div>
+          <select id="phys-type">
+            <option value="dynamic">Dinámico (Cae con gravedad)</option>
+            <option value="static">Estático (Fijo en el aire)</option>
+            <option value="kinematic">Cinemático (Animado)</option>
+          </select>
+        </div>
+        
+        <div class="prop-row" style="margin-top:10px;">
+          <div class="prop-label">Masa (kg)</div>
+          <input type="number" id="phys-mass" value="1" min="0" step="0.1">
+        </div>
+        
+        <div class="prop-row" style="margin-top:10px;">
+          <div class="prop-label">Rebote (Restitución)</div>
+          <input type="range" id="phys-restitution" min="0" max="1" step="0.05" value="0.3">
+        </div>
+      </div>
+    </div>
+    
+    <div id="tab-mods" class="tab-content">
+      <div class="panel-section">
+        <div class="panel-title">Eventos AR</div>
+        <div class="panel-subtitle">Interacciones y disparadores visuales</div>
+        
+        <div class="prop-row">
+          <div class="prop-label">Al hacer Tap (En AR)</div>
+          <select id="event-tap">
+            <option value="none">Nada</option>
+            <option value="url">Abrir Enlace Web</option>
+            <option value="spin">Girar Objeto</option>
+            <option value="hide">Ocultar Objeto</option>
+            <option value="sound">Reproducir Sonido</option>
+          </select>
+        </div>
+        
+        <div class="prop-row" id="event-url-row" style="display:none;">
+          <div class="prop-label">URL de destino</div>
+          <input type="text" id="event-url-input" placeholder="https://ejemplo.com">
+        </div>
+        
+        <div class="prop-row" id="event-sound-row" style="display:none;">
+          <div class="prop-label">Archivo de Audio</div>
+          <input type="file" id="event-sound-input" accept="audio/*">
+        </div>
+      </div>
+      
+      <div class="panel-section" style="border-top:1px solid var(--border); padding-top:20px;">
+        <div class="panel-title">Tipos de Tracking</div>
+        <div class="panel-subtitle">Cómo anclar este objeto</div>
+        <select id="tracking-type">
+          <option value="surface">Suelo / Superficie (SLAM)</option>
+          <option value="face">Rostro (Face Tracking)</option>
+          <option value="image">Marcador de Imagen</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="guest-modal">
+    <div class="modal-content" style="max-width: 440px; text-align: center; border-top-color: #ffbd2e;">
+      <h3 style="color: var(--fg); margin-bottom: 15px; font-size: 24px;">Estás en Modo Invitado</h3>
+      <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 24px; line-height: 1.6;">
+        Tus diseños <strong>no se guardarán en la nube</strong> a menos que exportes el archivo manualmente (GLB).<br><br>
+        Inicia sesión o crea una cuenta para almacenar tus proyectos, gestionarlos desde tu dashboard y acceder a ellos desde cualquier dispositivo.
+      </p>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn" onclick="document.getElementById('guest-modal').classList.remove('active')">Continuar sin cuenta</button>
+        <button class="btn btn-primary" onclick="window.location.href='/login'" style="background: var(--color-system-blue); border: none; color: white;">Crear Cuenta / Entrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="save-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(22, 33, 54, 0.8); z-index: 200; justify-content: center; align-items: center;">
+    <div class="modal-content" style="max-width: 440px; width: 100%; text-align: left; border-top-color: var(--color-system-blue); background: var(--bg); padding: 30px; border-radius: var(--radius-cards);">
+      <h3 style="color: var(--fg); margin-bottom: 5px; font-size: 20px;">Guardar Proyecto</h3>
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Guarda como uno nuevo o sobreescribe uno existente.</p>
+      
+      <div style="margin-bottom: 20px;">
+        <label style="font-size: 12px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 8px;">Nombre del Proyecto</label>
+        <input type="text" id="save-project-name" placeholder="Ej: Mi Proyecto AR" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--input-bg); color: var(--fg);">
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="font-size: 12px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 8px;">Proyectos Existentes (clic para sobreescribir)</label>
+        <div id="existing-projects-list" style="max-height: 220px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; background: var(--input-bg);">
+          <div style="padding: 12px; font-size: 13px; color: var(--text-muted); text-align: center;">Cargando...</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button class="btn" onclick="document.getElementById('save-modal').style.display='none'">Cancelar</button>
+        <button class="btn btn-primary" id="btn-confirm-save" style="background: var(--color-system-blue); border: none; min-width: 140px;">Guardar Nuevo</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal">
+    <div class="modal-content">
+      <h3>Escanea para ver en AR</h3>
+      <div id="qr-code"></div>
+      <div>
+        <button class="btn" onclick="document.getElementById('modal').classList.remove('active')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+  <script type="module" src="js/groq.js"></script>
+  <script type="module" src="js/scene.js"></script>
+  <script type="module" src="js/qr.js"></script>
+  <script type="module" src="js/gesture.js"></script>
+  <script type="module" src="js/voice.js"></script>
+  
+  <script type="module">
+    document.querySelectorAll('.tab').forEach(t => {
+      t.addEventListener('click', () => {
+        // Encontrar los tabs hermanos
+        const siblings = t.parentElement.querySelectorAll('.tab');
+        siblings.forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        
+        // Encontrar los contenidos correspondientes
+        const container = t.closest('.sidebar-left') || t.closest('.sidebar-right');
+        container.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+        document.getElementById(t.dataset.target).classList.add('active');
+      });
+    });
+
+    document.getElementById('btn-theme').addEventListener('click', () => {
+      const isLight = document.body.getAttribute('data-theme') === 'light';
+      document.body.setAttribute('data-theme', isLight ? 'dark' : 'light');
+      
+      if (isLight) {
+        document.getElementById('icon-moon').style.display = 'block';
+        document.getElementById('icon-sun').style.display = 'none';
+      } else {
+        document.getElementById('icon-moon').style.display = 'none';
+        document.getElementById('icon-sun').style.display = 'block';
+      }
+    });
+
+    // Check Auth
+    async function checkAuth() {
+      try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        
+        if (data.loggedIn && data.user) {
+          document.getElementById('user-profile').style.display = 'flex';
+          document.getElementById('user-name').innerText = data.user.name;
+          document.getElementById('user-avatar').innerText = data.user.name.charAt(0).toUpperCase();
+          document.getElementById('btn-save-cloud').style.display = 'inline-block';
+          window.currentUser = data.user;
+        } else {
+          document.getElementById('guest-modal').classList.add('active');
+        }
+      } catch (err) {
+        document.getElementById('guest-modal').classList.add('active');
+      }
+    }
+    
+    checkAuth();
+
+    // Guardar en Nube Modal Logic
+    let selectedExistingProjectId = null;
+    let selectedExistingProjectModelId = null;
+
+    document.getElementById('btn-save-cloud').addEventListener('click', async () => {
+      document.getElementById('save-modal').style.display = 'flex';
+      
+      const inputName = document.getElementById('save-project-name');
+      const btnConfirm = document.getElementById('btn-confirm-save');
+      const listContainer = document.getElementById('existing-projects-list');
+      
+      // Reset state
+      selectedExistingProjectId = null;
+      selectedExistingProjectModelId = null;
+      
+      if (window.currentProjectName) {
+        inputName.value = window.currentProjectName;
+        // If we opened an existing project, let's treat it as an overwrite by default
+        selectedExistingProjectModelId = window.currentLiveId;
+        btnConfirm.innerText = 'Sobreescribir Proyecto';
+      } else {
+        inputName.value = '';
+        btnConfirm.innerText = 'Guardar Nuevo';
+      }
+
+      // Fetch projects
+      listContainer.innerHTML = '<div style="padding: 12px; font-size: 13px; color: var(--text-muted); text-align: center;">Cargando proyectos...</div>';
+      
+      try {
+        const res = await fetch('/api/projects');
+        if (!res.ok) throw new Error('No auth');
+        const projects = await res.json();
+        
+        if (projects.length === 0) {
+          listContainer.innerHTML = '<div style="padding: 12px; font-size: 13px; color: var(--text-muted); text-align: center;">No tienes proyectos guardados aún.</div>';
+        } else {
+          listContainer.innerHTML = '';
+          projects.forEach(p => {
+            const div = document.createElement('div');
+            div.style.padding = '10px 12px';
+            div.style.borderBottom = '1px solid var(--border)';
+            div.style.cursor = 'pointer';
+            div.style.transition = 'background 0.2s';
+            div.style.display = 'flex';
+            div.style.alignItems = 'center';
+            div.style.gap = '12px';
+            
+            // Highlight if it's the currently loaded one
+            if (p.model_id === selectedExistingProjectModelId) {
+              div.style.background = 'var(--bg-subtle)';
+              div.style.borderLeft = '3px solid var(--primary)';
+            }
+            
+            div.innerHTML = `
+              <div style="width: 48px; height: 48px; border-radius: 6px; overflow: hidden; background: var(--bg-base); border: 1px solid var(--border); flex-shrink: 0; pointer-events: none;">
+                <model-viewer src="/models/${p.model_id}" auto-rotate shadow-intensity="1" style="width: 100%; height: 100%;"></model-viewer>
+              </div>
+              <div style="font-size: 14px; color: var(--fg); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${p.name || 'Proyecto sin nombre'}
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Última mod: ${new Date(p.updated_at).toLocaleDateString()}</div>
+              </div>
+            `;
+            
+            div.onmouseover = () => { if (p.model_id !== selectedExistingProjectModelId) div.style.background = 'var(--bg-subtle)'; };
+            div.onmouseout = () => { if (p.model_id !== selectedExistingProjectModelId) div.style.background = 'transparent'; };
+            
+            div.onclick = () => {
+              selectedExistingProjectId = p.id;
+              selectedExistingProjectModelId = p.model_id;
+              inputName.value = p.name;
+              btnConfirm.innerText = 'Sobreescribir Proyecto';
+              
+              // Refresh list UI
+              Array.from(listContainer.children).forEach(child => {
+                child.style.background = 'transparent';
+                child.style.borderLeft = 'none';
+              });
+              div.style.background = 'var(--bg-subtle)';
+              div.style.borderLeft = '3px solid var(--primary)';
+            };
+            
+            listContainer.appendChild(div);
+          });
+        }
+      } catch(e) {
+        listContainer.innerHTML = '<div style="padding: 12px; font-size: 13px; color: #ff4d4d; text-align: center;">Error cargando proyectos.</div>';
+      }
+    });
+
+    // Reset when typing a new name
+    document.getElementById('save-project-name').addEventListener('input', (e) => {
+      // If user starts typing a different name, default back to 'Save New'
+      if (selectedExistingProjectModelId && e.target.value !== window.currentProjectName) {
+        selectedExistingProjectId = null;
+        selectedExistingProjectModelId = null;
+        document.getElementById('btn-confirm-save').innerText = 'Guardar Nuevo';
+        // Clear selection in UI
+        const listContainer = document.getElementById('existing-projects-list');
+        Array.from(listContainer.children).forEach(child => {
+          child.style.background = 'transparent';
+          child.style.borderLeft = 'none';
+        });
+      }
+    });
+
+    document.getElementById('btn-confirm-save').addEventListener('click', () => {
+      const projectName = document.getElementById('save-project-name').value || 'Mi Proyecto 3D';
+      document.getElementById('save-modal').style.display = 'none';
+      window.currentProjectName = projectName;
+      
+      const idToOverwrite = selectedExistingProjectModelId || window.currentLiveId;
+      
+      window.sceneAPI.showBadge('Guardando...');
+      window.sceneAPI.uploadSceneForAR((modelId) => {
+        window.currentLiveId = modelId;
+        window.sceneAPI.showBadge(selectedExistingProjectModelId ? '¡Proyecto sobreescrito!' : '¡Guardado en nube!');
+      }, idToOverwrite, projectName);
+    });
+  </script>
+</body>
+</html>
