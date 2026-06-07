@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "AR-AI-Editor/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "**",
+      "use": "@vercel/static"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/aaru.html"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/AR-AI-Editor/server.js"
+    },
+    {
+      "source": "/models/(.*)",
+      "destination": "/AR-AI-Editor/server.js"
+    }
+  ]
+}
