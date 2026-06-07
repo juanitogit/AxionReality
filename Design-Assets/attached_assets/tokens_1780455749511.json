@@ -1,0 +1,345 @@
+{
+  "color": {
+    "midnight-ink": {
+      "$value": "#000000",
+      "$type": "color",
+      "$description": "Midnight Ink — Page backgrounds, primary text, prominent borders for ghost elements, button text on accent backgrounds"
+    },
+    "carbon": {
+      "$value": "#0a0a0a",
+      "$type": "color",
+      "$description": "Carbon — Secondary surface backgrounds, input fields, subtle borders and text"
+    },
+    "cloud-white": {
+      "$value": "#ffffff",
+      "$type": "color",
+      "$description": "Cloud White — Primary text, prominent interactive elements and borders against dark backgrounds"
+    },
+    "silver-thread": {
+      "$value": "#bababa",
+      "$type": "color",
+      "$description": "Silver Thread — Muted text, decorative strokes, subtle accents"
+    },
+    "dove-gray": {
+      "$value": "#9d9d9d",
+      "$type": "color",
+      "$description": "Dove Gray — Navigation links, secondary body text, ghost input borders"
+    },
+    "pewter": {
+      "$value": "#858484",
+      "$type": "color",
+      "$description": "Pewter — Fainter body text and borders"
+    },
+    "deep-violet": {
+      "$value": "#1019ec",
+      "$type": "color",
+      "$description": "Deep Violet — Section backgrounds, colored text, decorative accents — creates impactful visual breaks"
+    },
+    "electric-yellow": {
+      "$value": "#ebfb10",
+      "$type": "color",
+      "$description": "Electric Yellow — Primary action backgrounds, header banner highlighting, energetic accents"
+    }
+  },
+  "font": {
+    "abcoracle": {
+      "$value": "abcOracle",
+      "$type": "fontFamily",
+      "$description": "Primary font for body text, navigation, buttons, and medium-sized headings. Weight 330 provides a light, precise feel, while 400 offers standard readability."
+    },
+    "gtpantheon": {
+      "$value": "gtPantheon",
+      "$type": "fontFamily",
+      "$description": "Used for large headings and display text. Its light weight combined with tight letter spacing creates a sophisticated, refined presence that commands attention without being heavy."
+    }
+  },
+  "typography": {
+    "xs": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "12px",
+        "fontWeight": 330,
+        "lineHeight": 1.33
+      },
+      "$type": "typography",
+      "$description": "Typography step xs at 12px"
+    },
+    "xs-2": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "12px",
+        "fontWeight": 330,
+        "lineHeight": 1.33
+      },
+      "$type": "typography",
+      "$description": "Typography step xs-2 at 12px"
+    },
+    "xs-3": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "12px",
+        "fontWeight": 330,
+        "lineHeight": 1.33
+      },
+      "$type": "typography",
+      "$description": "Typography step xs-3 at 12px"
+    },
+    "xs-4": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "12px",
+        "fontWeight": 330,
+        "lineHeight": 1.33
+      },
+      "$type": "typography",
+      "$description": "Typography step xs-4 at 12px"
+    },
+    "xs-5": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "12px",
+        "fontWeight": 400,
+        "lineHeight": 1.33
+      },
+      "$type": "typography",
+      "$description": "Typography step xs-5 at 12px"
+    },
+    "xs-6": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "12px",
+        "fontWeight": 330,
+        "lineHeight": 1.33
+      },
+      "$type": "typography",
+      "$description": "Typography step xs-6 at 12px"
+    },
+    "xs-7": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "12px",
+        "fontWeight": 400,
+        "lineHeight": 1.33
+      },
+      "$type": "typography",
+      "$description": "Typography step xs-7 at 12px"
+    },
+    "xs-8": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "12px",
+        "fontWeight": 330,
+        "lineHeight": 1.33
+      },
+      "$type": "typography",
+      "$description": "Typography step xs-8 at 12px"
+    },
+    "sm": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "13px",
+        "fontWeight": 330,
+        "lineHeight": 1.5
+      },
+      "$type": "typography",
+      "$description": "Typography step sm at 13px"
+    },
+    "sm-2": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "13px",
+        "fontWeight": 330,
+        "lineHeight": 1.25
+      },
+      "$type": "typography",
+      "$description": "Typography step sm-2 at 13px"
+    },
+    "sm-3": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "14px",
+        "fontWeight": 330,
+        "lineHeight": 1.43
+      },
+      "$type": "typography",
+      "$description": "Typography step sm-3 at 14px"
+    },
+    "sm-4": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "14px",
+        "fontWeight": 330,
+        "lineHeight": 1.43
+      },
+      "$type": "typography",
+      "$description": "Typography step sm-4 at 14px"
+    },
+    "base": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "15px",
+        "fontWeight": 330,
+        "lineHeight": 1.25
+      },
+      "$type": "typography",
+      "$description": "Typography step base at 15px"
+    },
+    "base-2": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "16px",
+        "fontWeight": 330,
+        "lineHeight": 1.5
+      },
+      "$type": "typography",
+      "$description": "Typography step base-2 at 16px"
+    },
+    "base-3": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "16px",
+        "fontWeight": 400,
+        "lineHeight": 1.5
+      },
+      "$type": "typography",
+      "$description": "Typography step base-3 at 16px"
+    },
+    "xl": {
+      "$value": {
+        "fontFamily": "gtPantheon",
+        "fontSize": "20px",
+        "fontWeight": 330,
+        "lineHeight": 1.2
+      },
+      "$type": "typography",
+      "$description": "Typography step xl at 20px"
+    },
+    "3xl": {
+      "$value": {
+        "fontFamily": "gtPantheon",
+        "fontSize": "30px",
+        "fontWeight": 330,
+        "lineHeight": 1.25
+      },
+      "$type": "typography",
+      "$description": "Typography step 3xl at 30px"
+    },
+    "3xl-2": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "34px",
+        "fontWeight": 330,
+        "lineHeight": 1.25
+      },
+      "$type": "typography",
+      "$description": "Typography step 3xl-2 at 34px"
+    },
+    "4xl": {
+      "$value": {
+        "fontFamily": "gtPantheon",
+        "fontSize": "40px",
+        "fontWeight": 330,
+        "lineHeight": 1.2
+      },
+      "$type": "typography",
+      "$description": "Typography step 4xl at 40px"
+    },
+    "5xl": {
+      "$value": {
+        "fontFamily": "abcOracle",
+        "fontSize": "50px",
+        "fontWeight": 330,
+        "lineHeight": 1.25
+      },
+      "$type": "typography",
+      "$description": "Typography step 5xl at 50px"
+    }
+  },
+  "spacing": {
+    "8": {
+      "$value": "8px",
+      "$type": "dimension",
+      "$description": "Spacing 8px"
+    },
+    "12": {
+      "$value": "12px",
+      "$type": "dimension",
+      "$description": "Spacing 12px"
+    },
+    "16": {
+      "$value": "16px",
+      "$type": "dimension",
+      "$description": "Spacing 16px"
+    },
+    "20": {
+      "$value": "20px",
+      "$type": "dimension",
+      "$description": "Spacing 20px"
+    },
+    "24": {
+      "$value": "24px",
+      "$type": "dimension",
+      "$description": "Spacing 24px"
+    },
+    "28": {
+      "$value": "28px",
+      "$type": "dimension",
+      "$description": "Spacing 28px"
+    },
+    "32": {
+      "$value": "32px",
+      "$type": "dimension",
+      "$description": "Spacing 32px"
+    },
+    "40": {
+      "$value": "40px",
+      "$type": "dimension",
+      "$description": "Spacing 40px"
+    },
+    "48": {
+      "$value": "48px",
+      "$type": "dimension",
+      "$description": "Spacing 48px"
+    },
+    "64": {
+      "$value": "64px",
+      "$type": "dimension",
+      "$description": "Spacing 64px"
+    },
+    "80": {
+      "$value": "80px",
+      "$type": "dimension",
+      "$description": "Spacing 80px"
+    },
+    "96": {
+      "$value": "96px",
+      "$type": "dimension",
+      "$description": "Spacing 96px"
+    },
+    "128": {
+      "$value": "128px",
+      "$type": "dimension",
+      "$description": "Spacing 128px"
+    },
+    "unit": {
+      "$value": "4px",
+      "$type": "dimension",
+      "$description": "Base spacing unit"
+    }
+  },
+  "radius": {
+    "md": {
+      "$value": "6px",
+      "$type": "dimension",
+      "$description": "Border radius md"
+    }
+  },
+  "$extensions": {
+    "com.refero.extraction": {
+      "url": "https://aaru.com",
+      "siteName": "Aaru",
+      "extractedAt": "2026-05-08T18:59:10.427Z",
+      "variant": "extended"
+    }
+  }
+}

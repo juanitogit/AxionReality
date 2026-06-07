@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#0A0B10"/>
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00E559" stroke-width="1" opacity="0.1"/>
+  </pattern>
+  <rect width="800" height="600" fill="url(#grid)" />
+  <g transform="translate(400, 300)">
+    <path d="M -150 0 Q 0 -100 150 0 Q 0 100 -150 0 Z" fill="none" stroke="#00E559" stroke-width="2"/>
+    <circle cx="0" cy="0" r="40" fill="none" stroke="#00E559" stroke-width="2" stroke-dasharray="5 5"/>
+    <circle cx="0" cy="0" r="20" fill="#00E559"/>
+    <!-- Reticle crosshairs -->
+    <line x1="-80" y1="0" x2="-50" y2="0" stroke="#00E559" stroke-width="2"/>
+    <line x1="50" y1="0" x2="80" y2="0" stroke="#00E559" stroke-width="2"/>
+    <line x1="0" y1="-80" x2="0" y2="-50" stroke="#00E559" stroke-width="2"/>
+    <line x1="0" y1="50" x2="0" y2="80" stroke="#00E559" stroke-width="2"/>
+  </g>
+</svg>

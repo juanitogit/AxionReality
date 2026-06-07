@@ -1,0 +1,76 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  /* Dynamic Colors mapped to CSS Variables */
+  --color-bg-base: var(--bg-base);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-text-base: var(--text-base);
+  --color-text-muted: var(--text-muted);
+  --color-border-subtle: var(--border-subtle);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+
+  /* Shared Brand Colors */
+  --color-wrike-green: #00e05c;
+  --color-deep-space-gradient: #00b259;
+
+  /* Typography */
+  --font-tt-norms-pro: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Typography — Scale */
+  --text-caption: 12px;
+  --text-body: 16px;
+  --text-body-lg: 18px;
+  --text-subheading: 20px;
+  --text-heading: 24px;
+  --text-heading-lg: 32px;
+  --text-display-sm: 48px;
+  --text-display: 64px;
+
+  /* Border Radius */
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-3xl-2: 30px;
+  --radius-3xl-3: 40px;
+
+  /* Shadows */
+  --shadow-xl: rgba(0, 0, 0, 0.15) 0px 15px 35px -15px;
+}
+
+:root {
+  /* Light Mode (Wrike Style) */
+  --bg-base: #ffffff;
+  --bg-subtle: #f2f5fa;
+  --text-base: #162136;
+  --text-muted: #2b3a57;
+  --border-subtle: #c1c9d8;
+  --primary: #00e05c;
+  --secondary: #0073d3;
+}
+
+[data-theme="dark"] {
+  /* Dark Mode */
+  --bg-base: #000000;
+  --bg-subtle: #0f0f0f;
+  --text-base: #ffffff;
+  --text-muted: #a3a3a3;
+  --border-subtle: #262626;
+  --primary: #00e05c;
+  --secondary: #38bdf8;
+}
+
+body {
+  background-color: var(--color-bg-base);
+  color: var(--color-text-base);
+  font-family: var(--font-tt-norms-pro);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

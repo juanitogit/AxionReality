@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#0A0B10"/>
+  <g transform="translate(400, 300) scale(1.5)">
+    <!-- Isometric Cube Wireframe -->
+    <path d="M0 -100 L86 -50 L86 50 L0 100 L-86 50 L-86 -50 Z" fill="none" stroke="#00E559" stroke-width="2" stroke-dasharray="4 4" opacity="0.6"/>
+    <path d="M0 -100 L0 0 L86 -50 M0 0 L-86 -50 M0 0 L0 100" fill="none" stroke="#00E559" stroke-width="2"/>
+    <circle cx="0" cy="0" r="4" fill="#00E559" />
+    <circle cx="0" cy="-100" r="4" fill="#00E559" />
+    <circle cx="86" cy="-50" r="4" fill="#00E559" />
+    <circle cx="86" cy="50" r="4" fill="#00E559" />
+    <circle cx="0" cy="100" r="4" fill="#00E559" />
+    <circle cx="-86" cy="50" r="4" fill="#00E559" />
+    <circle cx="-86" cy="-50" r="4" fill="#00E559" />
+  </g>
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00E559" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#0A0B10" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#glow)"/>
+</svg>

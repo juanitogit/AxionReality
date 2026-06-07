@@ -3,3 +3,13 @@ node_modules/
 .DS_Store
 AR-AI-Editor/models/*.glb
 !AR-AI-Editor/models/current.glb
+
+# Design-Assets build artifacts & caches
+Design-Assets/node_modules/
+Design-Assets/.local/
+Design-Assets/artifacts/*/node_modules/
+Design-Assets/artifacts/*/dist/
+Design-Assets/artifacts/*/.tsbuildinfo
+Design-Assets/lib/*/node_modules/
+Design-Assets/lib/*/.tsbuildinfo
+Design-Assets/scripts/node_modules/

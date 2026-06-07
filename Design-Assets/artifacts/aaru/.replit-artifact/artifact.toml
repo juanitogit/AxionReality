@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Aaru"
+version = "1.0.0"
+id = "artifacts/aaru"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18726
+
+[services.development]
+run = "pnpm --filter @workspace/aaru run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/aaru", "run", "build" ]
+publicDir = "artifacts/aaru/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18726"
+BASE_PATH = "/"
