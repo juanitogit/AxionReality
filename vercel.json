@@ -2,15 +2,28 @@
   "version": 2,
   "builds": [
     {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "Design-Assets/artifacts/aaru/dist/public"
-      }
-    },
-    {
       "src": "AR-AI-Editor/server.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "frontend-dist/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "AR-AI-Editor/**/*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "AR-AI-Editor/**/*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "AR-AI-Editor/js/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "AR-AI-Editor/**/*.png",
+      "use": "@vercel/static"
     }
   ],
   "rewrites": [
@@ -23,16 +36,40 @@
       "destination": "/AR-AI-Editor/server.js"
     },
     {
-      "source": "/editor",
-      "destination": "/AR-AI-Editor/server.js"
+      "source": "/editor/js/(.*)",
+      "destination": "/AR-AI-Editor/js/$1"
     },
     {
-      "source": "/editor/(.*)",
-      "destination": "/AR-AI-Editor/server.js"
+      "source": "/editor/style.css",
+      "destination": "/AR-AI-Editor/style.css"
+    },
+    {
+      "source": "/editor/logo-cube.png",
+      "destination": "/AR-AI-Editor/logo-cube.png"
+    },
+    {
+      "source": "/editor/ar-viewer.html",
+      "destination": "/AR-AI-Editor/ar-viewer.html"
+    },
+    {
+      "source": "/editor/ar-accessories.html",
+      "destination": "/AR-AI-Editor/ar-accessories.html"
+    },
+    {
+      "source": "/editor",
+      "destination": "/AR-AI-Editor/index.html"
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": "/frontend-dist/assets/$1"
+    },
+    {
+      "source": "/(.*\\.(js|css|svg|png|jpg|jpeg|ico|txt|json|woff|woff2))",
+      "destination": "/frontend-dist/$1"
     },
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/frontend-dist/index.html"
     }
   ]
 }

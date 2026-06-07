@@ -1,7 +1,0 @@
-{
-  "name": "axion-reality-root",
-  "private": true,
-  "scripts": {
-    "vercel-build": "npm i -g pnpm && cd Design-Assets && pnpm install --no-frozen-lockfile && cd artifacts/aaru && npx vite build --config vite.config.ts"
-  }
-}
