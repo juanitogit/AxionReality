@@ -5,35 +5,12 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "Design-Assets/artifacts/aaru/dist"
+        "distDir": "Design-Assets/artifacts/aaru/dist/public"
       }
     },
     {
       "src": "AR-AI-Editor/server.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "AR-AI-Editor/**/*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "AR-AI-Editor/**/*.css",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "AR-AI-Editor/**/*.js",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "AR-AI-Editor/**/*.png",
-      "use": "@vercel/static"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/editor",
-      "destination": "/editor/",
-      "permanent": true
     }
   ],
   "rewrites": [
@@ -46,20 +23,12 @@
       "destination": "/AR-AI-Editor/server.js"
     },
     {
+      "source": "/editor",
+      "destination": "/AR-AI-Editor/server.js"
+    },
+    {
       "source": "/editor/(.*)",
-      "destination": "/AR-AI-Editor/$1"
-    },
-    {
-      "source": "/editor/",
-      "destination": "/AR-AI-Editor/index.html"
-    },
-    {
-      "source": "/assets/(.*)",
-      "destination": "/assets/$1"
-    },
-    {
-      "source": "/(.+\\.(svg|png|jpg|jpeg|txt|ico|json|woff|woff2))",
-      "destination": "/$1"
+      "destination": "/AR-AI-Editor/server.js"
     },
     {
       "source": "/(.*)",
